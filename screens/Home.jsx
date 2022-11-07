@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import {
   View,
-  StatusBar,
   FlatList,
   Alert,
   ActivityIndicator,
@@ -11,8 +10,9 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Post } from "../components/Post";
+import Loading from "../components/Loading";
 
-export const Home = () => {
+export const Home = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [items, setItems] = useState([]);
 
@@ -36,18 +36,7 @@ export const Home = () => {
   }, []);
 
   if (isLoading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <ActivityIndicator size="large" />
-        <Text style={{ marginTop: 15 }}>Загрузка...</Text>
-      </View>
-    );
+    return <Loading />;
   }
 
   return (
@@ -58,7 +47,14 @@ export const Home = () => {
         }
         data={items}
         renderItem={({ item }) => (
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("FullPost", {
+                id: item.id,
+                title: item.title,
+              })
+            }
+          >
             <Post
               title={item.title}
               imageUrl={item.imageUrl}
